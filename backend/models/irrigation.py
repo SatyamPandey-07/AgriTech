@@ -36,6 +36,10 @@ class IrrigationZone(db.Model):
     chemical_concentration = db.Column(db.Float, default=0.0) # ppm
     washout_risk_threshold = db.Column(db.Float, default=0.7)
     
+    # Biosecurity (L3-1562)
+    pest_control_mode = db.Column(db.Boolean, default=False) # Auto-inject biological neutralizers
+    biosecurity_lockdown = db.Column(db.Boolean, default=False) # Full halt of all water movement
+    
     fertigation_logs = db.relationship('FertigationLog', backref='zone', lazy='dynamic', cascade='all, delete-orphan')
 
     def to_dict(self):

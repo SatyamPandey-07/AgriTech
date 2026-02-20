@@ -22,6 +22,10 @@ class InsurancePolicy(db.Model):
     notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    # Biosecurity Force Majeure (L3-1562)
+    force_majeure_flag = db.Column(db.Boolean, default=False)
+    outbreak_correlation_id = db.Column(db.Integer)
+
     def to_dict(self):
         return {
             'id': self.id,

@@ -158,3 +158,43 @@ class OutbreakAlert(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'acknowledged_at': self.acknowledged_at.isoformat() if self.acknowledged_at else None
         }
+
+class MigrationVector(db.Model):
+    """
+    Predicts the movement of pests/diseases based on wind and humidity (L3-1562).
+    """
+    __tablename__ = 'migration_vectors'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    outbreak_zone_id = db.Column(db.Integer, db.ForeignKey('outbreak_zones.id'), nullable=False)
+    
+    vector_direction_deg = db.Column(db.Float)
+    estimated_speed_kmh = db.Column(db.Float)
+    
+    probability_score = db.Column(db.Float) # 0-1.0 (Prediction Confidence)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+class BiosecurityContainment(db.Model):
+    """
+    Tracks active containment zones and their automated lockdown statuses.
+    """
+    __tablename__ = 'biosecurity_containments'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    outbreak_zone_id = db.Column(db.Integer, db.ForeignKey('outbreak_zones.id'), nullable=False)
+    
+    blockade_type = db.Column(db.String(50)) # e.g., 'FERTIGATION_NEUTRALIZER', 'BATCH_QUARANTINE'
+    is_active = db.Column(db.Boolean, default=True)
+    
+    quarantine_level = db.Column(db.String(20)) # WARNING, LOCKDOWN, CRITICAL
+    activated_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'zone_id': self.outbreak_zone_id,
+            'type': self.blockade_type,
+            'active': self.is_active,
+            'level': self.quarantine_level,
+            'started': self.activated_at.isoformat()
+        }

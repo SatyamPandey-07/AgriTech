@@ -63,6 +63,7 @@ class BulkOrder(db.Model):
     
     tax_amount = db.Column(db.Float)
     shipping_cost = db.Column(db.Float, default=0)
+    circular_credits_used = db.Column(db.Float, default=0.0)
     
     # Logistics Escrow
     customs_clearance_status = db.Column(db.String(20), default='PENDING')

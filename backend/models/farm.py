@@ -17,6 +17,11 @@ class Farm(db.Model):
     location = db.Column(db.String(255), nullable=False)
     acreage = db.Column(db.Float)
     
+    # Predictive Harvest Data (L3-1560)
+    harvest_readiness_index = db.Column(db.Float, default=0.0) # 0-1.0 (1.0 = Ready)
+    predicted_yield_kg = db.Column(db.Float, default=0.0)
+    predicted_harvest_date = db.Column(db.DateTime)
+    
     # Metadata as JSON
     soil_details = db.Column(db.Text) # e.g., {"type": "Loamy", "pH": 6.5}
     

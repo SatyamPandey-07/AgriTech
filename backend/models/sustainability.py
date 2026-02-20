@@ -76,3 +76,22 @@ class CreditLedger(db.Model):
             'serial_number': self.serial_number,
             'issued_at': self.issued_at.isoformat()
         }
+
+class SustainabilityScore(db.Model):
+    """
+    Farm-level sustainability metrics (L3-1558 & L3-1561 integration).
+    """
+    __tablename__ = 'sustainability_scores'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    farm_id = db.Column(db.Integer, db.ForeignKey('farms.id'), nullable=False)
+    
+    overall_score = db.Column(db.Float, default=0.0) # 0-100
+    carbon_efficiency = db.Column(db.Float, default=0.0) # Lower is better? or 0-100
+    water_efficiency = db.Column(db.Float, default=0.0)
+    biodiversity_index = db.Column(db.Float, default=0.0)
+    
+    # Circular Economy Bonus (L3-1561)
+    circular_recycling_bonus = db.Column(db.Float, default=0.0)
+    
+    last_audit_date = db.Column(db.DateTime, default=datetime.utcnow)

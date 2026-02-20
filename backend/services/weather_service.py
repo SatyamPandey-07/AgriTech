@@ -99,3 +99,21 @@ class WeatherService:
     def get_active_subscriptions():
         """Get all users needing automated advisories"""
         return AdvisorySubscription.query.filter_by(is_active=True).all()
+
+    @staticmethod
+    def emit_biosecurity_vectors(location, wind_deg, speed):
+        """
+        Emits events to the biosecurity engine when weather conditions 
+        favor pest migration (L3-1562).
+        """
+        from backend.models.gews import OutbreakZone
+        from backend.services.neutralization_engine import NeutralizationEngine
+        
+        # High wind speed increases the propagation velocity of disease outbreaks
+        zones = OutbreakZone.query.filter(OutbreakZone.status != 'contained').all()
+        for z in zones:
+            # Only update if the location matches the outbreak zone
+            if z.zone_id == location:
+                z.wind_vector_deg = wind_deg
+                z.propagation_velocity = speed * 0.15 # Migration speed multiplier
+                NeutralizationEngine.run_outbreak_analysis(z.id)

@@ -119,3 +119,13 @@ class NotificationService:
         if unread_only:
             query = query.filter(Notification.read_at.is_(None))
         return query.order_by(Notification.sent_at.desc()).all()
+
+    @staticmethod
+    def notify_harvest_readiness(farm_id, crop_name, readiness):
+        """
+        Specialized notification for harvest progress. (L3-1560)
+        """
+        title = "Harvest Velocity Alert"
+        message = f"Farm {farm_id} reporting {readiness*100:.1f}% readiness for {crop_name}. Forward contracts are now open for bidding."
+        # Broadcast to all potential buyers (simplified: user_id=None means broadcast)
+        NotificationService.create_notification(title, message, "HARVEST_HEDGE")

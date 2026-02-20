@@ -27,6 +27,12 @@ class SupplyBatch(db.Model):
     
     # Crop Details
     crop_name = db.Column(db.String(100), nullable=False)
+    carbon_footprint_hash = db.Column(db.String(64)) # Linked to CarbonLedger
+    net_zero_qualified = db.Column(db.Boolean, default=False)
+    
+    # Predictive Analytics (L3-1560 & L3-1562)
+    predicted_quality_grade = db.Column(db.String(20)) # A, B, C predicted pre-harvest
+    quarantine_status = db.Column(db.String(30)) # NONE, LOCKED, TRACE_LOCK
     crop_variety = db.Column(db.String(100))
     quantity = db.Column(db.Float, nullable=False)
     unit = db.Column(db.String(20), default='KG')
@@ -47,6 +53,7 @@ class SupplyBatch(db.Model):
     distributor_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     retailer_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     soil_test_id = db.Column(db.Integer, db.ForeignKey('soil_tests.id'))
+    insurance_policy_id = db.Column(db.Integer, db.ForeignKey('insurance_policies.id'))
     
     # Quality & Legal
     is_certified = db.Column(db.Boolean, default=False)
